@@ -1,2 +1,108 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LiveHost AI</title><link rel="stylesheet" href="/static/style.css"></head><body><div class="app"><aside class="sidebar"><div class="brand"><span class="logo">◉</span><div><b>LiveHost AI</b><small>Avatar livestream studio</small></div></div><nav><button class="nav active">Studio</button><button class="nav">Kịch bản</button><button class="nav">Bình luận</button><button class="nav">Cài đặt</button></nav><div class="server-card"><span id="serverDot" class="dot"></span><div><b id="serverText">Đang kết nối…</b><small id="serverMode">Backend</small></div></div></aside><main><header><div><h1>AI Livestream Host</h1><p>Điều khiển avatar, giọng nói và phản hồi comment từ một nơi.</p></div><div class="status-pill" id="wsStatus">WS: connecting</div></header><section class="grid top-grid"><div class="panel stage-panel"><div class="panel-title"><b>Live Preview</b><span id="liveBadge">DEMO</span></div><div class="stage"><video id="cam" autoplay muted playsinline></video><img id="avatarImg" alt="avatar preview"><div class="empty" id="emptyState"><div class="orb">AI</div><p>Bật camera hoặc tải avatar để bắt đầu</p></div><div class="lower-third"><b>LIVEHOST AI</b><span>AI avatar preview</span></div></div><div class="controls"><button id="cameraBtn" class="primary">Bật camera</button><button id="micBtn">Bật mic</button><label class="upload">Tải avatar<input type="file" id="avatarInput" accept="image/*" hidden></label><button id="avatarModeBtn">Avatar mode</button></div></div><div class="panel stack"><div class="panel-title"><b>GPU Engine</b><span class="soft">Remote</span></div><div class="metric"><span>Engine</span><b>PersonaLive adapter</b></div><div class="metric"><span>Chế độ</span><b id="engineMode">Demo local</b></div><div class="metric"><span>GPU server</span><b id="gpuUrl">Chưa cấu hình</b></div><p class="hint">Laptop chỉ mở web. Model nặng sẽ chạy trên GPU server bên ngoài.</p><button id="connectGpuBtn" class="wide">Kiểm tra kết nối GPU</button></div></section><section class="grid bottom-grid"><div class="panel"><div class="panel-title"><b>AI Voice / TTS</b><span class="soft">Browser TTS</span></div><textarea id="ttsText" rows="4">Xin chào mọi người! Hôm nay mình sẽ giới thiệu sản phẩm và trả lời bình luận trực tiếp nhé.</textarea><div class="row"><select id="voiceSelect"></select><button id="speakBtn" class="primary">Nói thử</button><button id="stopSpeakBtn">Dừng</button></div></div><div class="panel comments"><div class="panel-title"><b>Comment Assistant</b><span class="soft">Mô phỏng</span></div><div id="commentFeed" class="feed"></div><div class="row"><input id="commentInput" placeholder="Ví dụ: Shop ơi giá bao nhiêu?"><button id="sendCommentBtn">Gửi</button></div></div><div class="panel script"><div class="panel-title"><b>Kịch bản bán hàng</b><span class="soft">Auto cue</span></div><div class="cue active-cue"><small>HOOK</small><p>“Mọi người nhìn kỹ sản phẩm này nhé, điểm đáng tiền nhất nằm ở…”</p></div><div class="cue"><small>BENEFIT</small><p>“Phần này giải quyết đúng vấn đề mà nhiều bạn hay gặp khi…”</p></div><div class="cue"><small>CTA</small><p>“Ai cần mình ghim đúng mẫu thì comment ‘mẫu’ nhé.”</p></div></div></section></main></div><script src="/static/app.js"></script></body></html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LiveHost AI</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo">◉</span><div><b>LiveHost AI</b><small>AI livestream host</small></div></div>
+    <nav>
+      <button class="nav active">Studio</button>
+      <button class="nav">Bình luận</button>
+      <button class="nav">Kịch bản</button>
+      <button class="nav">Cài đặt</button>
+    </nav>
+    <div class="server-card">
+      <span id="serverDot" class="dot"></span>
+      <div><b id="serverText">Đang kết nối…</b><small id="serverMode">Backend</small></div>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <div><h1>AI Livestream Host</h1><p>Avatar, TTS, comment queue và kịch bản bán hàng trong một web.</p></div>
+      <div class="header-actions">
+        <button id="obsBtn">OBS mode</button>
+        <div class="status-pill" id="wsStatus">WS: connecting</div>
+      </div>
+    </header>
+
+    <section class="grid top-grid">
+      <div class="panel stage-panel">
+        <div class="panel-title"><b>Live Preview</b><span id="liveBadge">V0.3</span></div>
+        <div class="stage" id="stage">
+          <video id="cam" autoplay muted playsinline></video>
+          <img id="avatarImg" alt="avatar preview">
+          <div class="empty" id="emptyState"><div class="orb">AI</div><p>Bật camera hoặc tải avatar để bắt đầu</p></div>
+          <div class="lower-third"><b id="lowerProduct">LIVEHOST AI</b><span>AI host preview</span></div>
+        </div>
+        <div class="controls">
+          <button id="cameraBtn" class="primary">Bật camera</button>
+          <button id="micBtn">Bật mic</button>
+          <label class="upload">Tải avatar<input type="file" id="avatarInput" accept="image/*" hidden></label>
+          <button id="avatarModeBtn">Avatar mode</button>
+        </div>
+      </div>
+
+      <div class="panel stack">
+        <div class="panel-title"><b>Session</b><span class="soft">Product context</span></div>
+        <label>Tên sản phẩm<input id="productName" placeholder="Ví dụ: Dép nam quai ngang"></label>
+        <label>Giá tham chiếu<input id="productPrice" placeholder="Ví dụ: 99.000đ"></label>
+        <label>Thông tin đã kiểm tra<textarea id="productNotes" rows="4" placeholder="Chỉ nhập thông tin bạn biết là đúng: chất liệu, size, ưu/nhược điểm..."></textarea></label>
+        <button id="saveProductBtn" class="wide primary">Lưu thông tin phiên live</button>
+        <div class="metric"><span>AI trả lời</span><b id="aiStatus">Đang kiểm tra…</b></div>
+        <div class="metric"><span>Avatar engine</span><b id="avatarEngineStatus">Chưa cấu hình</b></div>
+        <div class="metric"><span>TikTok LIVE</span><b>Adapter ready</b></div>
+      </div>
+    </section>
+
+    <section class="grid bottom-grid">
+      <div class="panel">
+        <div class="panel-title"><b>AI Voice / TTS</b><span class="soft">Browser TTS</span></div>
+        <textarea id="ttsText" rows="4">Xin chào mọi người! Hôm nay mình sẽ giới thiệu sản phẩm và trả lời bình luận trực tiếp nhé.</textarea>
+        <div class="row">
+          <select id="voiceSelect"></select>
+          <button id="speakBtn" class="primary">Nói thử</button>
+          <button id="stopSpeakBtn">Dừng</button>
+        </div>
+      </div>
+
+      <div class="panel comments">
+        <div class="panel-title"><b>Comment Assistant</b><span class="soft">Human approval</span></div>
+        <div class="row compact">
+          <input id="viewerInput" placeholder="Tên viewer (tùy chọn)">
+          <label class="toggle"><input id="autoApprove" type="checkbox"> Tự duyệt + đọc</label>
+        </div>
+        <div id="commentFeed" class="feed"></div>
+        <div class="row">
+          <input id="commentInput" placeholder="Ví dụ: Shop ơi giá bao nhiêu?">
+          <button id="sendCommentBtn">Test comment</button>
+        </div>
+      </div>
+
+      <div class="panel script">
+        <div class="panel-title"><b>Kịch bản bán hàng</b><span class="soft">Auto cue</span></div>
+        <div class="cue active-cue"><small>HOOK</small><p>“Mọi người nhìn kỹ sản phẩm này nhé, điểm đáng chú ý nhất nằm ở…”</p></div>
+        <div class="cue"><small>BENEFIT</small><p>“Nếu bạn đang cần giải quyết vấn đề … thì phần này là điểm nên xem kỹ.”</p></div>
+        <div class="cue"><small>PROOF</small><p>“Mình chỉ nói theo thông tin mình đã kiểm tra, không tự thêm thông số.”</p></div>
+        <div class="cue"><small>CTA</small><p>“Ai muốn mình kiểm tra đúng mẫu/size thì comment nhé.”</p></div>
+      </div>
+    </section>
+
+    <section class="panel connector-panel">
+      <div class="panel-title"><b>Kết nối hệ thống</b><span class="soft">Ready for adapters</span></div>
+      <div class="connector-grid">
+        <div><b>Remote Avatar / GPU</b><p>Web gửi điều khiển tới GPU server qua adapter. Chưa thuê GPU nên không phát sinh phí.</p><button id="connectGpuBtn">Kiểm tra cấu hình</button></div>
+        <div><b>TikTok LIVE comments</b><p>Server public chưa bật reader không chính thức. Có thể cắm approved API hoặc local connector sau.</p><button id="tiktokStatusBtn">Kiểm tra connector</button></div>
+        <div><b>OBS / TikTok LIVE Studio</b><p>Dùng Browser Source với URL OBS mode để lấy khung hình web.</p><button id="copyObsBtn">Sao chép URL OBS</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
